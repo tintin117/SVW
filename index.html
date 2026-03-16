@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#2C1A10">
+  <meta name="theme-color" content="#111111">
   <title>Wild Lives — Mobile Museum</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,42 +13,40 @@
   <link rel="stylesheet" href="style/main.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="logo-area">
-        <svg class="logo-leaf" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
-          <path d="M20,4 C8,4 4,16 4,24 C4,32 12,36 20,36 C20,28 28,22 36,18 C32,10 26,4 20,4 Z" fill="#6B7B3C"/>
-          <path d="M20,36 C20,28 28,22 36,18" stroke="#4A5E28" stroke-width="1.5" fill="none"/>
-        </svg>
-        <h1 class="logo-text">WILD LIVES</h1>
-      </div>
-      <p class="tagline">Discover · Protect · Play</p>
-    </div>
-  </header>
 
-  <main class="gallery" id="gallery" role="main">
-    <div class="carousel-header">
-      <span class="carousel-label">Species</span>
-      <div class="carousel-rule"></div>
-      <span class="carousel-counter" id="carousel-counter"><b>01</b>/08</span>
-    </div>
-    <div class="carousel-viewport" id="carousel-viewport">
-      <button class="carousel-nav carousel-nav--prev" id="carousel-prev" aria-label="Previous species">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <div class="carousel-track" id="gallery-grid"></div>
-      <button class="carousel-nav carousel-nav--next" id="carousel-next" aria-label="Next species">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-    </div>
-    <div class="carousel-dots" id="carousel-dots"></div>
-  </main>
+  <!-- ── Left Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">Wild<br>Lives</div>
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <ul>
+        <li><button class="nav-link">threats</button></li>
+        <li><button class="nav-link nav-link--active">species</button></li>
+        <li><button class="nav-link">habitat</button></li>
+        <li><button class="nav-link">action</button></li>
+        <li><button class="nav-link">about</button></li>
+      </ul>
+    </nav>
+    <div class="sidebar-counter" id="carousel-counter"><b>01</b> / 08</div>
+  </aside>
 
-  <footer class="site-footer">
-    <p>Every species matters. Every action counts.</p>
-  </footer>
+  <!-- ── Top-right icons ── -->
+  <div class="top-icons">
+    <button class="icon-btn" aria-label="Search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </button>
+    <button class="icon-btn" aria-label="Menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
 
-  <!-- Species Detail Modal -->
+  <!-- ── Accordion Panels ── -->
+  <main class="panels-area" id="panels-area" role="main" aria-label="Species gallery"></main>
+
+  <!-- ── Species Detail Modal ── -->
   <div class="modal-overlay" id="detail-modal" hidden aria-modal="true" role="dialog" aria-labelledby="modal-name">
     <div class="modal-backdrop" id="detail-backdrop"></div>
     <div class="modal-card" role="document">
@@ -82,7 +80,7 @@
     </div>
   </div>
 
-  <!-- Game Modal -->
+  <!-- ── Game Modal ── -->
   <div class="modal-overlay game-overlay" id="game-modal" hidden aria-modal="true" role="dialog" aria-label="Mini game">
     <canvas id="game-canvas" aria-label="Game canvas"></canvas>
     <button class="btn-close game-close-btn" id="close-game" aria-label="Close game">&#x2715;</button>
