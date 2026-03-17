@@ -187,23 +187,42 @@
 
   // ── Drag / Swipe (vertical) ──────────────
   function initDrag() {
-    const THRESHOLD = 40;  // px — low for a responsive, natural feel
-    let startY = 0;
-    let dragY  = 0;
+    const THRESHOLD = 40;
+    let startY   = 0;
+    let dragY    = 0;
     let dragging = false;
 
-    function snapBack() {
-      panelsArea.style.transition = 'transform 0.22s ease';
-      panelsArea.style.transform  = '';
-      setTimeout(() => { panelsArea.style.transition = ''; }, 220);
+    // Only move the 3 visible panels — not the whole container
+    function visiblePanels() {
+      return panelEls.filter(p =>
+        p.classList.contains('is-prev') ||
+        p.classList.contains('is-active') ||
+        p.classList.contains('is-next')
+      );
+    }
+
+    function setDragTransform(dy) {
+      visiblePanels().forEach(p => {
+        p.style.transition = 'none';
+        p.style.transform  = `translateY(${dy}px)`;
+      });
+    }
+
+    function clearDragTransform(animate) {
+      panelEls.forEach(p => {
+        p.style.transition = animate ? 'transform 0.22s ease' : '';
+        p.style.transform  = '';
+      });
+      if (animate) {
+        setTimeout(() => panelEls.forEach(p => { p.style.transition = ''; }), 220);
+      }
     }
 
     function onStart(y) {
-      startY   = y;
-      dragY    = 0;
-      dragging = true;
+      startY      = y;
+      dragY       = 0;
+      dragging    = true;
       wasDragging = false;
-      panelsArea.style.transition = 'none'; // disable so drag tracks 1:1
       panelsArea.classList.add('is-dragging');
       pauseLoop();
     }
@@ -212,25 +231,24 @@
       if (!dragging) return;
       dragY = y - startY;
       if (Math.abs(dragY) > 5) wasDragging = true;
-      panelsArea.style.transform = `translateY(${dragY}px)`;
+      setDragTransform(dragY);
     }
 
     function onEnd() {
       if (!dragging) return;
       dragging = false;
       panelsArea.classList.remove('is-dragging');
-      panelsArea.style.transition = '';
 
       if (dragY < -THRESHOLD) {
-        panelsArea.style.transform = '';
+        clearDragTransform(false);
         goTo(currentIndex + 1);
         resetLoop();
       } else if (dragY > THRESHOLD) {
-        panelsArea.style.transform = '';
+        clearDragTransform(false);
         goTo(currentIndex - 1);
         resetLoop();
       } else {
-        snapBack();   // not enough movement — return to current
+        clearDragTransform(true);  // snap back
         resumeLoop();
       }
 
@@ -311,13 +329,13 @@
     if (typeof window.GAME_START === 'function') {
       stopCurrentGame = window.GAME_START(
         gameCanvas,
-        () => handleGameEnd('win', sp),
-        () => handleGameEnd('lose', sp)
+        () => handleGameEnd(),
+        () => handleGameEnd()
       );
     }
   }
 
-  function handleGameEnd(result, sp) {
+  function handleGameEnd() {
     // Game draws its own end screen; close button remains accessible.
   }
 
