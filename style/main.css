@@ -106,14 +106,20 @@ body {
 }
 
 /* ── Individual species panel ── */
+/* All panels collapsed by default; only prev/active/next are shown */
 .species-panel {
-  flex: 1;
-  position: relative;
+  flex: 0;
   overflow: hidden;
+  position: relative;
   cursor: pointer;
   transition: flex var(--t-panel);
   -webkit-user-select: none;
   user-select: none;
+}
+
+.species-panel.is-prev,
+.species-panel.is-next {
+  flex: 1;
 }
 
 .species-panel.is-active {
@@ -121,12 +127,13 @@ body {
   cursor: pointer;
 }
 
-/* Photo placeholder — replace background-image per species */
+/* Photo background — centered, no stretch, no crop */
 .panel-bg {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
   filter: grayscale(1);
   transition: filter var(--t-panel);
 }

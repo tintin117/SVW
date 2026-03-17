@@ -39,17 +39,14 @@
   let loopTimer = null;
   let progressAnim = null;  // requestAnimationFrame ID
 
-  // Placeholder backgrounds — swap each for the real species photo when ready
-  const PLACEHOLDERS = [
-    'asset/pangolin.jpg',  // Sea Turtle   (placeholder)
-    'asset/pangolin.jpg',  // Elephant     (placeholder)
-    'asset/pangolin.jpg',  // Orangutan    (placeholder)
-    'asset/pangolin.jpg',  // Snow Leopard (placeholder)
-    'asset/pangolin.jpg',  // Blue Whale   (placeholder)
-    'asset/pangolin.jpg',  // Pangolin
-    'asset/pangolin.jpg',  // Rhinoceros   (placeholder)
-    'asset/pangolin.jpg',  // Axolotl      (placeholder)
+  // Rotate 3 real images across all 8 species slots.
+  // Replace each entry with the correct species photo when ready.
+  const IMAGES = [
+    'asset/pangolin.png',
+    'asset/tiger.png',
+    'asset/saola.png',
   ];
+  const PLACEHOLDERS = SPECIES.map((_, i) => IMAGES[i % IMAGES.length]);
 
   // Short display names for panel headings
   const PANEL_NAMES = {
@@ -71,8 +68,15 @@
 
   // ── Panel state ─────────────────────────
   function updatePanels() {
+    const n = SPECIES.length;
+    const prevIdx = ((currentIndex - 1) + n) % n;
+    const nextIdx = (currentIndex + 1) % n;
+
     panelEls.forEach((panel, i) => {
-      panel.classList.toggle('is-active', i === currentIndex);
+      panel.classList.remove('is-prev', 'is-active', 'is-next');
+      if (i === currentIndex) panel.classList.add('is-active');
+      else if (i === prevIdx)  panel.classList.add('is-prev');
+      else if (i === nextIdx)  panel.classList.add('is-next');
     });
     startProgressBar();
   }
