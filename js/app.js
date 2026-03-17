@@ -187,22 +187,23 @@
 
   // ── Drag / Swipe (vertical) ──────────────
   function initDrag() {
-    const THRESHOLD = 80; // px of travel before advancing
+    const THRESHOLD = 40;  // px — low for a responsive, natural feel
     let startY = 0;
-    let dragY = 0;
+    let dragY  = 0;
     let dragging = false;
 
-    function clearNudge() {
-      panelsArea.style.transition = 'transform 0.18s ease';
-      panelsArea.style.transform = '';
-      setTimeout(() => { panelsArea.style.transition = ''; }, 180);
+    function snapBack() {
+      panelsArea.style.transition = 'transform 0.22s ease';
+      panelsArea.style.transform  = '';
+      setTimeout(() => { panelsArea.style.transition = ''; }, 220);
     }
 
     function onStart(y) {
-      startY = y;
-      dragY = 0;
+      startY   = y;
+      dragY    = 0;
       dragging = true;
       wasDragging = false;
+      panelsArea.style.transition = 'none'; // disable so drag tracks 1:1
       panelsArea.classList.add('is-dragging');
       pauseLoop();
     }
@@ -210,31 +211,30 @@
     function onMove(y) {
       if (!dragging) return;
       dragY = y - startY;
-
-      // Rubber-band nudge: diminishing returns as threshold approaches
-      const progress = Math.min(Math.abs(dragY) / THRESHOLD, 1);
-      const nudge = Math.sign(dragY) * progress * 28 * (1 - progress * 0.45);
-      panelsArea.style.transform = `translateY(${nudge}px)`;
-
-      // Cross threshold → advance and reset origin for continuous drag
-      if (Math.abs(dragY) >= THRESHOLD) {
-        wasDragging = true;
-        panelsArea.style.transform = '';
-        goTo(currentIndex + (dragY < 0 ? 1 : -1));
-        resetLoop();
-        startY = y;
-        dragY = 0;
-      }
+      if (Math.abs(dragY) > 5) wasDragging = true;
+      panelsArea.style.transform = `translateY(${dragY}px)`;
     }
 
     function onEnd() {
       if (!dragging) return;
       dragging = false;
       panelsArea.classList.remove('is-dragging');
-      clearNudge();
-      resumeLoop();
-      // Keep wasDragging true briefly so the click handler can see it
-      setTimeout(() => { wasDragging = false; }, 50);
+      panelsArea.style.transition = '';
+
+      if (dragY < -THRESHOLD) {
+        panelsArea.style.transform = '';
+        goTo(currentIndex + 1);
+        resetLoop();
+      } else if (dragY > THRESHOLD) {
+        panelsArea.style.transform = '';
+        goTo(currentIndex - 1);
+        resetLoop();
+      } else {
+        snapBack();   // not enough movement — return to current
+        resumeLoop();
+      }
+
+      setTimeout(() => { wasDragging = false; }, 100);
     }
 
     // Touch

@@ -112,8 +112,10 @@ body {
 }
 
 /* ── Individual species panel ── */
-/* All panels collapsed by default; only prev/active/next are shown */
+/* Hidden by default. CSS order ensures prev=top, active=middle, next=bottom
+   regardless of DOM index — this keeps the active panel always centered. */
 .species-panel {
+  order: 10;        /* hidden panels pushed out of view */
   flex: 0;
   overflow: hidden;
   position: relative;
@@ -123,15 +125,9 @@ body {
   user-select: none;
 }
 
-.species-panel.is-prev,
-.species-panel.is-next {
-  flex: 1;
-}
-
-.species-panel.is-active {
-  flex: 5;
-  cursor: pointer;
-}
+.species-panel.is-prev   { order: 1; flex: 1; }
+.species-panel.is-active { order: 2; flex: 5; }
+.species-panel.is-next   { order: 3; flex: 1; }
 
 /* Photo background — centered, no stretch, no crop */
 .panel-bg {
