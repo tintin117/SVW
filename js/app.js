@@ -10,11 +10,11 @@
   const loadedScripts = new Set();
 
   // ── DOM references ──────────────────────
-  const panelsArea    = document.getElementById('panels-area');
-  const detailModal   = document.getElementById('detail-modal');
-  const detailBackdrop= document.getElementById('detail-backdrop');
-  const gameModal     = document.getElementById('game-modal');
-  const gameCanvas    = document.getElementById('game-canvas');
+  const panelsArea     = document.getElementById('panels-area');
+  const detailModal    = document.getElementById('detail-modal');
+  const detailBackdrop = document.getElementById('detail-backdrop');
+  const gameModal      = document.getElementById('game-modal');
+  const gameCanvas     = document.getElementById('game-canvas');
 
   const closeDetailBtn  = document.getElementById('close-detail');
   const closeGameBtn    = document.getElementById('close-game');
@@ -28,13 +28,18 @@
   const modalHabitat    = document.getElementById('modal-habitat');
   const modalThreat     = document.getElementById('modal-threat');
   const modalFacts      = document.getElementById('modal-facts');
-  const counterEl       = document.getElementById('carousel-counter');
 
   // ── Accordion state ─────────────────────
   let currentIndex = 0;
   let panelEls = [];
+  let progressBar = null;   // active panel's progress bar element
 
-  // Placeholder backgrounds — replace each entry with the species' real photo when ready
+  // Auto-loop interval (ms) — time each species is displayed
+  const LOOP_INTERVAL = 5000;
+  let loopTimer = null;
+  let progressAnim = null;  // requestAnimationFrame ID
+
+  // Placeholder backgrounds — swap each for the real species photo when ready
   const PLACEHOLDERS = [
     'asset/pangolin.jpg',  // Sea Turtle   (placeholder)
     'asset/pangolin.jpg',  // Elephant     (placeholder)
@@ -46,38 +51,87 @@
     'asset/pangolin.jpg',  // Axolotl      (placeholder)
   ];
 
-  // Short panel display names (large serif, single/double word)
+  // Short display names for panel headings
   const PANEL_NAMES = {
-    turtle:      'Sea Turtle',
-    elephant:    'Elephant',
-    orangutan:   'Orangutan',
-    snow_leopard:'Snow Leopard',
-    whale:       'Blue Whale',
-    pangolin:    'Pangolin',
-    rhino:       'Rhinoceros',
-    axolotl:     'Axolotl',
+    turtle:       'Sea Turtle',
+    elephant:     'Elephant',
+    orangutan:    'Orangutan',
+    snow_leopard: 'Snow Leopard',
+    whale:        'Blue Whale',
+    pangolin:     'Sunda Pangolin',
+    rhino:        'Rhinoceros',
+    axolotl:      'Axolotl',
   };
+
+  // First sentence of threat text (used as short panel description)
+  function shortDesc(sp) {
+    const sentence = sp.threat.split(/\.\s/)[0];
+    return sentence.endsWith('.') ? sentence : sentence + '.';
+  }
 
   // ── Panel state ─────────────────────────
   function updatePanels() {
-    const total = SPECIES.length;
     panelEls.forEach((panel, i) => {
       panel.classList.toggle('is-active', i === currentIndex);
     });
-    const cur = String(currentIndex + 1).padStart(2, '0');
-    const tot = String(total).padStart(2, '0');
-    counterEl.innerHTML = `<b>${cur}</b> / ${tot}`;
+    startProgressBar();
   }
 
   function goTo(index) {
     const n = SPECIES.length;
-    const next = ((index % n) + n) % n;
-    if (next === currentIndex) return;
-    currentIndex = next;
+    currentIndex = ((index % n) + n) % n;
     updatePanels();
   }
 
-  // ── Render Accordion Gallery ─────────────
+  // ── Auto-loop ────────────────────────────
+  function startLoop() {
+    clearInterval(loopTimer);
+    loopTimer = setInterval(() => goTo(currentIndex + 1), LOOP_INTERVAL);
+  }
+
+  function resetLoop() {
+    startLoop(); // restart countdown after user interaction
+  }
+
+  // Animate the progress bar on the active panel
+  function startProgressBar() {
+    // Cancel any running animation
+    if (progressAnim) cancelAnimationFrame(progressAnim);
+
+    // Find the active panel's progress bar
+    const activePanel = panelEls[currentIndex];
+    if (!activePanel) return;
+    progressBar = activePanel.querySelector('.panel-progress');
+    if (!progressBar) return;
+
+    // Reset bar
+    progressBar.style.transition = 'none';
+    progressBar.style.width = '0%';
+
+    // Force reflow so the reset registers before we start animating
+    progressBar.getBoundingClientRect();
+
+    // Animate to 100% over LOOP_INTERVAL
+    progressBar.style.transition = `width ${LOOP_INTERVAL}ms linear`;
+    progressBar.style.width = '100%';
+  }
+
+  // Pause progress when modals are open
+  function pauseLoop() {
+    clearInterval(loopTimer);
+    if (progressBar) {
+      const computed = window.getComputedStyle(progressBar).width;
+      progressBar.style.transition = 'none';
+      progressBar.style.width = computed;
+    }
+  }
+
+  function resumeLoop() {
+    startLoop();
+    startProgressBar();
+  }
+
+  // ── Render Panels ────────────────────────
   function renderGallery() {
     SPECIES.forEach((sp, i) => {
       const panel = document.createElement('article');
@@ -86,22 +140,25 @@
       panel.setAttribute('role', 'button');
       panel.setAttribute('aria-label', `${sp.name} — tap to explore`);
 
-      const panelName = PANEL_NAMES[sp.id] || sp.name;
+      const name = PANEL_NAMES[sp.id] || sp.name;
+      const desc = shortDesc(sp);
 
       panel.innerHTML = `
         <div class="panel-bg" style="background-image: url('${PLACEHOLDERS[i]}')"></div>
         <div class="panel-overlay"></div>
         <div class="panel-content">
-          <h2 class="panel-name">${panelName}</h2>
-          <div class="panel-rule"></div>
-          <p class="panel-desc">${sp.threat}</p>
-        </div>`;
+          <h2 class="panel-name">${name}</h2>
+          <p class="panel-status">${sp.statusLabel}</p>
+          <p class="panel-desc">${desc}</p>
+        </div>
+        <div class="panel-progress"></div>`;
 
       panel.addEventListener('click', () => {
         if (i === currentIndex) {
           openDetail(sp);
         } else {
           goTo(i);
+          resetLoop();
         }
       });
 
@@ -109,7 +166,7 @@
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           if (i === currentIndex) openDetail(sp);
-          else goTo(i);
+          else { goTo(i); resetLoop(); }
         }
       });
 
@@ -118,11 +175,13 @@
     });
 
     updatePanels();
+    startLoop();
   }
 
   // ── Detail Modal ─────────────────────────
   function openDetail(sp) {
     activeSpecies = sp;
+    pauseLoop();
 
     modalArt.innerHTML = `<div style="position:absolute;inset:0;background:${sp.accentColor};opacity:0.25;"></div>${sp.svgArt}`;
     modalArt.style.background = sp.accentColor + '30';
@@ -150,11 +209,13 @@
     detailModal.hidden = true;
     document.body.style.overflow = '';
     activeSpecies = null;
+    resumeLoop();
   }
 
   // ── Game Modal ───────────────────────────
   function openGame(sp) {
     closeDetail();
+    pauseLoop();
 
     gameCanvas.width  = window.innerWidth;
     gameCanvas.height = window.innerHeight;
@@ -199,6 +260,7 @@
 
     gameModal.hidden = true;
     document.body.style.overflow = '';
+    resumeLoop();
   }
 
   function loadScript(src) {

@@ -1,32 +1,26 @@
 /* ═══════════════════════════════════════════
-   WILD LIVES — Accordion Gallery
-   Design: inDanger-inspired — Dark, Editorial
-   Touch-optimized: 16:9 kiosk + phones
+   WILD LIVES — Vertical Accordion Gallery
+   Design: Horizontal bands, auto-looping kiosk
 ═══════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Raleway:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Raleway:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-  /* ── Layout ── */
-  --sidebar-w: 180px;
+  /* Transitions */
+  --t-panel: 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  --t-ui:    0.25s ease;
 
-  /* ── Dark palette ── */
-  --bg:             #0d0d0d;
-  --sidebar-bg:     #111111;
-  --text-white:     #ffffff;
-  --text-muted:     #888888;
-  --text-dim:       rgba(255,255,255,0.45);
+  /* Dark palette */
+  --bg:          #0d0d0d;
+  --header-bg:   #111111;
+  --text-white:  #ffffff;
+  --text-muted:  rgba(255,255,255,0.55);
 
-  /* ── Transitions ── */
-  --t-panel: 0.62s cubic-bezier(0.4, 0, 0.2, 1);
-  --t-ui:    0.28s ease;
-
-  /* ── Modal palette (light card over dark backdrop) ── */
+  /* Modal (light card) */
   --bg-card:      #FAF7F0;
   --text-dark:    #2C1A10;
   --text-mid:     #5C4033;
   --text-muted-w: #8C7060;
-  --sand-beige:   #D4C4A8;
   --terracotta:   #C67B5C;
   --warm-clay:    #B5651D;
   --olive:        #6B7B3C;
@@ -46,97 +40,45 @@ button { border: none; cursor: pointer; font-family: inherit; }
 svg { display: block; }
 
 /* ═══════════════════════════════════════
-   BODY — Full-viewport dark flex layout
+   BODY — vertical flex column
 ═══════════════════════════════════════ */
 body {
-  font-family: 'Raleway', system-ui, -apple-system, sans-serif;
+  font-family: 'Raleway', system-ui, sans-serif;
   background: var(--bg);
   color: var(--text-white);
   height: 100dvh;
   overflow: hidden;
   display: flex;
+  flex-direction: column;
   -webkit-font-smoothing: antialiased;
 }
 
 /* ═══════════════════════════════════════
-   SIDEBAR
+   HEADER
 ═══════════════════════════════════════ */
-.sidebar {
-  width: var(--sidebar-w);
+.site-header {
   flex-shrink: 0;
-  background: var(--sidebar-bg);
+  height: 52px;
+  background: var(--header-bg);
   display: flex;
-  flex-direction: column;
-  padding: 36px 28px 32px;
-  position: relative;
-  z-index: 20;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  z-index: 30;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-.sidebar-brand {
-  font-family: 'Raleway', sans-serif;
-  font-size: 0.72rem;
+.site-name {
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-white);
-  line-height: 1.5;
 }
 
-/* Nav pushed to vertical center */
-.sidebar-nav {
-  margin: auto 0;
-}
-
-.sidebar-nav ul {
+.header-icons {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.nav-link {
-  background: none;
-  padding: 0;
-  font-family: 'Raleway', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  text-align: left;
-  transition: color var(--t-ui);
-}
-
-.nav-link--active {
-  color: var(--text-white);
-  font-weight: 600;
-}
-
-@media (hover: hover) {
-  .nav-link:hover { color: var(--text-white); }
-}
-
-/* Counter: 01 / 08 */
-.sidebar-counter {
-  font-family: 'Raleway', sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-}
-
-.sidebar-counter b {
-  color: var(--text-white);
-  font-weight: 600;
-}
-
-/* ═══════════════════════════════════════
-   TOP-RIGHT ICONS
-═══════════════════════════════════════ */
-.top-icons {
-  position: fixed;
-  top: 28px;
-  right: 32px;
-  z-index: 50;
-  display: flex;
-  gap: 20px;
+  gap: 22px;
   align-items: center;
 }
 
@@ -144,7 +86,7 @@ body {
   background: none;
   padding: 4px;
   color: var(--text-white);
-  opacity: 0.7;
+  opacity: 0.65;
   transition: opacity var(--t-ui);
 }
 
@@ -153,13 +95,14 @@ body {
 }
 
 /* ═══════════════════════════════════════
-   PANELS AREA
+   PANELS AREA — vertical stack
 ═══════════════════════════════════════ */
 .panels-area {
   flex: 1;
   display: flex;
-  height: 100dvh;
+  flex-direction: column;
   overflow: hidden;
+  min-height: 0;
 }
 
 /* ── Individual species panel ── */
@@ -178,97 +121,115 @@ body {
   cursor: pointer;
 }
 
-/* Placeholder background — user replaces with real photo */
+/* Photo placeholder — replace background-image per species */
 .panel-bg {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
   filter: grayscale(1);
+  transition: filter var(--t-panel);
 }
 
-/* Dark gradient overlay — heavier on inactive panels */
+/* Gradient: dark on left (text legibility) fading right */
 .panel-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: linear-gradient(
-    to top,
+    105deg,
     rgba(0,0,0,0.82) 0%,
-    rgba(0,0,0,0.18) 45%,
-    rgba(0,0,0,0.08) 100%
+    rgba(0,0,0,0.45) 45%,
+    rgba(0,0,0,0.12) 100%
   );
   transition: background var(--t-panel);
-  z-index: 1;
 }
 
 .species-panel:not(.is-active) .panel-overlay {
-  background: rgba(0,0,0,0.52);
+  background: rgba(0,0,0,0.54);
 }
 
-/* Text content: name + rule + description */
+/* Text: pinned top-left */
 .panel-content {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  padding: 40px 36px 48px;
+  padding: 14px 44px;
   z-index: 2;
 }
 
+/* ── Species name ── */
 .panel-name {
-  font-family: 'Lora', Georgia, 'Times New Roman', serif;
-  font-size: clamp(2rem, 5.5vw, 6rem);
-  font-weight: 400;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 1.35rem;          /* inactive */
   color: var(--text-white);
-  line-height: 1;
-  white-space: nowrap;
-  overflow: hidden;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
   margin: 0;
-  transition: opacity var(--t-panel);
+  transition: font-size var(--t-panel), opacity var(--t-panel);
+}
+
+.species-panel.is-active .panel-name {
+  font-size: clamp(3.5rem, 7.5vw, 9rem);
 }
 
 .species-panel:not(.is-active) .panel-name {
-  opacity: 0.55;
+  opacity: 0.72;
 }
 
-.panel-rule {
-  width: 36px;
-  height: 1px;
-  background: rgba(255,255,255,0.65);
-  margin: 16px 0 14px;
-  transition: opacity var(--t-panel);
-}
-
-.species-panel:not(.is-active) .panel-rule {
-  width: 24px;
-  opacity: 0.45;
-  margin: 12px 0 0;
-}
-
-/* Description — only shown when active */
-.panel-desc {
-  font-family: 'Raleway', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 300;
+/* ── Status line ── */
+.panel-status {
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
   color: rgba(255,255,255,0.72);
-  line-height: 1.7;
-  max-width: 400px;
-  overflow: hidden;
+  margin-top: 6px;
+  transition: opacity var(--t-panel), margin-top var(--t-panel);
+}
+
+.species-panel.is-active .panel-status {
+  margin-top: 14px;
+  font-size: 0.8rem;
+}
+
+/* ── Short threat description — only visible on active ── */
+.panel-desc {
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.62);
+  line-height: 1.6;
+  max-width: 520px;
+  margin-top: 4px;
   max-height: 0;
+  overflow: hidden;
   opacity: 0;
   transition:
-    opacity 0.35s ease 0.3s,
-    max-height 0.4s ease 0.1s;
+    opacity 0.3s ease 0.35s,
+    max-height 0.4s ease 0.2s;
 }
 
 .species-panel.is-active .panel-desc {
+  max-height: 80px;
   opacity: 1;
-  max-height: 160px;
 }
 
-/* Focus ring */
+/* ── Auto-loop progress bar ── */
+.panel-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: rgba(255,255,255,0.5);
+  z-index: 3;
+}
+
+/* Focus */
 .species-panel:focus-visible {
-  outline: 2px solid rgba(255,255,255,0.5);
+  outline: 2px solid rgba(255,255,255,0.55);
   outline-offset: -2px;
 }
 
@@ -280,7 +241,7 @@ body {
 .badge-VU { background: var(--status-vu); }
 
 /* ═══════════════════════════════════════
-   MODAL OVERLAY (shared)
+   MODAL OVERLAY
 ═══════════════════════════════════════ */
 .modal-overlay {
   position: fixed;
@@ -296,7 +257,7 @@ body {
 .modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.82);
+  background: rgba(0,0,0,0.85);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
@@ -488,9 +449,8 @@ body {
   height: var(--touch-min);
 }
 
-.btn-close:active, .btn-close:hover {
-  background: rgba(44,26,16,0.7);
-}
+.btn-close:active,
+.btn-close:hover { background: rgba(44,26,16,0.72); }
 
 /* ── Game Modal ── */
 .game-overlay {
@@ -527,54 +487,18 @@ body {
 /* ═══════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════ */
-
-/* Tablet landscape / kiosk 16:9 */
 @media (min-width: 1024px) {
   .modal-overlay { align-items: center; }
-  .modal-card {
-    border-radius: 24px;
-    max-height: 88dvh;
-  }
+  .modal-card { border-radius: 24px; max-height: 88dvh; }
 }
 
-/* Narrow sidebar on smaller screens */
-@media (max-width: 900px) {
-  :root { --sidebar-w: 140px; }
-  .panel-content { padding: 28px 24px 36px; }
-}
-
-/* Mobile: stack layout — sidebar becomes a top bar */
 @media (max-width: 640px) {
-  body { flex-direction: column; }
-
-  .sidebar {
-    width: 100%;
-    height: auto;
-    flex-direction: row;
-    align-items: center;
-    padding: 16px 20px;
-    gap: 0;
-  }
-
-  .sidebar-brand { margin-right: auto; white-space: nowrap; }
-  .sidebar-nav { display: none; }
-  .sidebar-counter { margin-left: auto; }
-
-  .panels-area {
-    flex: 1;
-    height: auto;
-  }
-
-  .panel-content { padding: 20px 20px 28px; }
-
-  .panel-name {
-    font-size: clamp(1.6rem, 7vw, 3rem);
-  }
-
-  .top-icons { top: 14px; right: 20px; }
+  .site-header { padding: 0 20px; }
+  .panel-content { padding: 12px 22px; }
+  .panel-name { font-size: 1.1rem; }
+  .species-panel.is-active .panel-name { font-size: clamp(2.5rem, 9vw, 5rem); }
 }
 
-/* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     transition-duration: 0.01ms !important;
@@ -582,7 +506,6 @@ body {
   }
 }
 
-/* Focus styles */
 :focus-visible {
   outline: 2px solid rgba(255,255,255,0.6);
   outline-offset: 2px;
