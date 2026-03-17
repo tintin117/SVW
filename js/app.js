@@ -33,6 +33,7 @@
   let currentIndex = 0;
   let panelEls = [];
   let progressBar = null;   // active panel's progress bar element
+  let wasDragging = false;  // suppress click after a completed drag
 
   // Auto-loop interval (ms) — time each species is displayed
   const LOOP_INTERVAL = 5000;
@@ -158,6 +159,7 @@
         <div class="panel-progress"></div>`;
 
       panel.addEventListener('click', () => {
+        if (wasDragging) return;  // ignore clicks that ended a drag
         if (i === currentIndex) {
           openDetail(sp);
         } else {
@@ -180,6 +182,71 @@
 
     updatePanels();
     startLoop();
+    initDrag();
+  }
+
+  // ── Drag / Swipe (vertical) ──────────────
+  function initDrag() {
+    const THRESHOLD = 80; // px of travel before advancing
+    let startY = 0;
+    let dragY = 0;
+    let dragging = false;
+
+    function clearNudge() {
+      panelsArea.style.transition = 'transform 0.18s ease';
+      panelsArea.style.transform = '';
+      setTimeout(() => { panelsArea.style.transition = ''; }, 180);
+    }
+
+    function onStart(y) {
+      startY = y;
+      dragY = 0;
+      dragging = true;
+      wasDragging = false;
+      panelsArea.classList.add('is-dragging');
+      pauseLoop();
+    }
+
+    function onMove(y) {
+      if (!dragging) return;
+      dragY = y - startY;
+
+      // Rubber-band nudge: diminishing returns as threshold approaches
+      const progress = Math.min(Math.abs(dragY) / THRESHOLD, 1);
+      const nudge = Math.sign(dragY) * progress * 28 * (1 - progress * 0.45);
+      panelsArea.style.transform = `translateY(${nudge}px)`;
+
+      // Cross threshold → advance and reset origin for continuous drag
+      if (Math.abs(dragY) >= THRESHOLD) {
+        wasDragging = true;
+        panelsArea.style.transform = '';
+        goTo(currentIndex + (dragY < 0 ? 1 : -1));
+        resetLoop();
+        startY = y;
+        dragY = 0;
+      }
+    }
+
+    function onEnd() {
+      if (!dragging) return;
+      dragging = false;
+      panelsArea.classList.remove('is-dragging');
+      clearNudge();
+      resumeLoop();
+      // Keep wasDragging true briefly so the click handler can see it
+      setTimeout(() => { wasDragging = false; }, 50);
+    }
+
+    // Touch
+    panelsArea.addEventListener('touchstart',  (e) => onStart(e.touches[0].clientY), { passive: true });
+    panelsArea.addEventListener('touchmove',   (e) => onMove(e.touches[0].clientY),  { passive: true });
+    panelsArea.addEventListener('touchend',    onEnd, { passive: true });
+    panelsArea.addEventListener('touchcancel', onEnd, { passive: true });
+
+    // Mouse
+    panelsArea.addEventListener('mousedown', (e) => { e.preventDefault(); onStart(e.clientY); });
+    window.addEventListener('mousemove', (e) => { if (dragging) onMove(e.clientY); });
+    window.addEventListener('mouseup',   onEnd);
   }
 
   // ── Detail Modal ─────────────────────────

@@ -103,6 +103,12 @@ body {
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
+  cursor: grab;
+  touch-action: pan-x; /* allow vertical touch drag to be handled by JS */
+}
+
+.panels-area.is-dragging {
+  cursor: grabbing;
 }
 
 /* ── Individual species panel ── */
