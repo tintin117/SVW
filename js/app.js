@@ -41,7 +41,7 @@
   // Rotate 3 real images across all 8 species slots.
   // Replace each entry with the correct species photo when ready.
   const IMAGES = [
-    'asset/pangolin.png',
+    'asset/pangolin/pangolin.png',
     'asset/tiger.png',
     'asset/saola.png',
   ];
@@ -362,7 +362,7 @@
 
   document.addEventListener('mousedown', () => {
     if (!factViewer.hidden) resetIdleTimer();
-  }, { passive: true });
+  });
 
   // ── Init ─────────────────────────────────
   renderGallery();
