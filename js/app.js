@@ -38,14 +38,13 @@
   const LOOP_INTERVAL = 5000;
   let loopTimer = null;
 
-  // Rotate 3 real images across all 8 species slots.
-  // Replace each entry with the correct species photo when ready.
+  // Carousel panel backgrounds. Use species avatar if defined, else rotate placeholders.
   const IMAGES = [
     'asset/pangolin/pangolin.png',
     'asset/tiger.png',
     'asset/saola.png',
   ];
-  const PLACEHOLDERS = SPECIES.map((_, i) => IMAGES[i % IMAGES.length]);
+  const PLACEHOLDERS = SPECIES.map((sp, i) => sp.avatar || IMAGES[i % IMAGES.length]);
 
   // Short display names for panel headings
   const PANEL_NAMES = {

@@ -195,6 +195,7 @@ window.SPECIES = [
     conservationMessage: 'Pangolin scales have no proven medicinal value. Raising awareness about this in consumer countries reduces demand. Reporting wildlife trafficking tips to authorities saves lives.',
     gameKey: 'pangolin',
     factImages: 2,
+    avatar: 'asset/pangolin/pangolin.png',
     accentColor: '#8a6840',
     svgArt: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="38" fill="#a8845c"/>
