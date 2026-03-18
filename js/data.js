@@ -20,6 +20,7 @@ window.SPECIES = [
     ],
     conservationMessage: 'Turning off beachfront lights during nesting season costs nothing and saves thousands of hatchlings. Refusing single-use plastic bags is a choice sea turtles cannot make for themselves.',
     gameKey: 'turtle',
+    factImages: 0,
     accentColor: '#2a9d8f',
     svgArt: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="50" cy="58" rx="28" ry="22" fill="#3aaa8f"/>
@@ -53,6 +54,7 @@ window.SPECIES = [
     ],
     conservationMessage: 'Anti-poaching patrols and snare removal programmes save entire herds. Supporting certified sustainable palm oil and timber also protects the forests elephants call home.',
     gameKey: 'elephant',
+    factImages: 0,
     accentColor: '#6b8e6b',
     svgArt: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="55" cy="60" rx="26" ry="18" fill="#7a9a7a"/>
@@ -86,6 +88,7 @@ window.SPECIES = [
     ],
     conservationMessage: 'Check products for certified sustainable palm oil (RSPO label). Borneo has lost 50% of its forest in 60 years — certified supply chains can reverse this trend.',
     gameKey: 'orangutan',
+    factImages: 0,
     accentColor: '#c07830',
     svgArt: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="50" cy="65" rx="18" ry="16" fill="#c07830"/>
@@ -121,6 +124,7 @@ window.SPECIES = [
     ],
     conservationMessage: 'Community-based livestock insurance schemes remove the financial incentive to kill snow leopards. Nature tourism provides an alternative livelihood for herders across the mountain ranges.',
     gameKey: 'snow_leopard',
+    factImages: 0,
     accentColor: '#8899aa',
     svgArt: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="54" cy="62" rx="28" ry="16" fill="#ccd4d8"/>
@@ -161,6 +165,7 @@ window.SPECIES = [
     ],
     conservationMessage: 'Slower ship speeds and adjusted shipping lanes dramatically reduce strike risk. The International Whaling Commission\'s 1986 moratorium saved blue whales from extinction — continued protection is keeping them here.',
     gameKey: 'whale',
+    factImages: 0,
     accentColor: '#2060a0',
     svgArt: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <path d="M8,50 Q12,36 30,38 Q50,36 72,40 Q88,42 92,50 Q88,60 72,62 Q50,66 28,62 Q12,62 8,50 Z" fill="#2c78c8"/>
@@ -189,6 +194,7 @@ window.SPECIES = [
     ],
     conservationMessage: 'Pangolin scales have no proven medicinal value. Raising awareness about this in consumer countries reduces demand. Reporting wildlife trafficking tips to authorities saves lives.',
     gameKey: 'pangolin',
+    factImages: 2,
     accentColor: '#8a6840',
     svgArt: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="38" fill="#a8845c"/>
@@ -229,6 +235,7 @@ window.SPECIES = [
     ],
     conservationMessage: 'Decades of dedicated ranger work have tripled the black rhino population from its historic low. Community-based conservation means local people benefit from living rhinos — making them worth more alive than dead.',
     gameKey: 'rhino',
+    factImages: 0,
     accentColor: '#7a6858',
     svgArt: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="52" cy="60" rx="30" ry="20" fill="#8a7a68"/>
@@ -262,6 +269,7 @@ window.SPECIES = [
     ],
     conservationMessage: 'Captive breeding programmes and lake restoration projects are racing against time. Filtering and cleaning the canals of Xochimilco is essential for any wild population to survive. Axolotls have survived 10,000 years in that one lake — they deserve more time.',
     gameKey: 'axolotl',
+    factImages: 0,
     accentColor: '#c05080',
     svgArt: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <path d="M78,60 Q94,56 96,62 Q94,68 78,62" fill="#e890b0"/>
