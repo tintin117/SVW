@@ -1,8 +1,50 @@
 /* ═══════════════════════════════════════════
-   WILD LIVES — Species Data
+WILD LIVES — Species Data
 ═══════════════════════════════════════════ */
 
 window.SPECIES = [
+  {
+    id: 'pangolin',
+    name: 'Sunda Pangolin',
+    scientificName: 'Manis javanica',
+    status: 'CR',
+    statusLabel: 'Critically Endangered',
+    statusClass: 'badge-CR',
+    population: 'Unknown — likely < 10,000',
+    habitat: 'Forests of Southeast Asia',
+    threat: 'Pangolins are the world\'s most trafficked mammal. Over one million have been taken from the wild in the past decade for scales used in traditional medicine and meat considered a delicacy.',
+    facts: [
+      'Their only defence is curling into a ball — which tragically makes them easy for poachers to simply pick up.',
+      'A pangolin\'s sticky tongue can be longer than its entire body and can eat 70 million insects per year.',
+      'They have no teeth — they swallow small stones to grind up food in their muscular stomach.'
+    ],
+    conservationMessage: 'Pangolin scales have no proven medicinal value. Raising awareness about this in consumer countries reduces demand. Reporting wildlife trafficking tips to authorities saves lives.',
+    gameKey: 'pangolin',
+    factImages: 2,
+    avatar: 'asset/pangolin/pangolin.png',
+    accentColor: '#8a6840',
+    svgArt: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="38" fill="#a8845c"/>
+      <path d="M50,50 L88,50 A38,38 0 0,1 86,62" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L86,62 A38,38 0 0,1 78,76" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L78,76 A38,38 0 0,1 64,86" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L64,86 A38,38 0 0,1 50,88" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L50,88 A38,38 0 0,1 36,86" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L36,86 A38,38 0 0,1 22,76" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L22,76 A38,38 0 0,1 14,62" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L14,62 A38,38 0 0,1 12,50" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L12,50 A38,38 0 0,1 14,38" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L14,38 A38,38 0 0,1 22,24" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L22,24 A38,38 0 0,1 36,14" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L36,14 A38,38 0 0,1 50,12" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L50,12 A38,38 0 0,1 64,14" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L64,14 A38,38 0 0,1 78,24" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L78,24 A38,38 0 0,1 86,38" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
+      <path d="M50,50 L86,38 A38,38 0 0,1 88,50" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
+      <circle cx="64" cy="42" r="4.5" fill="#2a1800"/>
+      <circle cx="65" cy="41" r="1.8" fill="rgba(255,255,255,0.4)"/>
+    </svg>`
+  },
   {
     id: 'turtle',
     name: 'Green Sea Turtle',
@@ -175,48 +217,6 @@ window.SPECIES = [
       <path d="M8,50 Q4,45 2,40 Q4,46 2,52 Q4,58 8,50" fill="#2060a0"/>
       <circle cx="30" cy="46" r="3" fill="#0a1a2a"/>
       <circle cx="29.5" cy="45.5" r="1" fill="rgba(255,255,255,0.5)"/>
-    </svg>`
-  },
-  {
-    id: 'pangolin',
-    name: 'Sunda Pangolin',
-    scientificName: 'Manis javanica',
-    status: 'CR',
-    statusLabel: 'Critically Endangered',
-    statusClass: 'badge-CR',
-    population: 'Unknown — likely < 10,000',
-    habitat: 'Forests of Southeast Asia',
-    threat: 'Pangolins are the world\'s most trafficked mammal. Over one million have been taken from the wild in the past decade for scales used in traditional medicine and meat considered a delicacy.',
-    facts: [
-      'Their only defence is curling into a ball — which tragically makes them easy for poachers to simply pick up.',
-      'A pangolin\'s sticky tongue can be longer than its entire body and can eat 70 million insects per year.',
-      'They have no teeth — they swallow small stones to grind up food in their muscular stomach.'
-    ],
-    conservationMessage: 'Pangolin scales have no proven medicinal value. Raising awareness about this in consumer countries reduces demand. Reporting wildlife trafficking tips to authorities saves lives.',
-    gameKey: 'pangolin',
-    factImages: 2,
-    avatar: 'asset/pangolin/pangolin.png',
-    accentColor: '#8a6840',
-    svgArt: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" r="38" fill="#a8845c"/>
-      <path d="M50,50 L88,50 A38,38 0 0,1 86,62" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L86,62 A38,38 0 0,1 78,76" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L78,76 A38,38 0 0,1 64,86" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L64,86 A38,38 0 0,1 50,88" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L50,88 A38,38 0 0,1 36,86" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L36,86 A38,38 0 0,1 22,76" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L22,76 A38,38 0 0,1 14,62" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L14,62 A38,38 0 0,1 12,50" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L12,50 A38,38 0 0,1 14,38" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L14,38 A38,38 0 0,1 22,24" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L22,24 A38,38 0 0,1 36,14" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L36,14 A38,38 0 0,1 50,12" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L50,12 A38,38 0 0,1 64,14" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L64,14 A38,38 0 0,1 78,24" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L78,24 A38,38 0 0,1 86,38" fill="#8a6840" stroke="#6b5030" stroke-width="0.8"/>
-      <path d="M50,50 L86,38 A38,38 0 0,1 88,50" fill="#a8845c" stroke="#6b5030" stroke-width="0.8"/>
-      <circle cx="64" cy="42" r="4.5" fill="#2a1800"/>
-      <circle cx="65" cy="41" r="1.8" fill="rgba(255,255,255,0.4)"/>
     </svg>`
   },
   {
