@@ -11,12 +11,28 @@
   const counterCurrent  = document.getElementById('counter-current');
   const counterTotal    = document.getElementById('counter-total');
 
+  // ── Fact Viewer DOM refs ────────────
+  const factViewer  = document.getElementById('fact-viewer');
+  const fvSlideArea = document.getElementById('fv-slide-area');
+  const fvClose     = document.getElementById('fv-close');
+  const fvDots      = document.getElementById('fv-dots');
+  const fvHint      = document.getElementById('fv-hint');
+  const fvCounter   = document.getElementById('fv-counter');
+
   // ── Accordion state ─────────────────────
   let currentIndex = 0;
   let panelEls = [];
   let dotEls   = [];
   let progressBar = null;   // active panel's progress bar element
   let wasDragging = false;  // suppress click after a completed drag
+
+  // ── Fact Viewer state ───────────────
+  let fvSpecies    = null;
+  let fvSlideIndex = 0;
+  let fvSlideCount = 0;
+  let fvIdleTimer  = null;
+
+  const IDLE_TIMEOUT = 60000; // ms — time before auto-closing viewer
 
   // Auto-loop interval (ms) — time each species is displayed
   const LOOP_INTERVAL = 5000;
@@ -111,6 +127,73 @@
   function resumeLoop() {
     startLoop();
     startProgressBar();
+  }
+
+  // ── Fact Viewer ──────────────────────
+  function renderSlide(index) {
+    const sp    = fvSpecies;
+    const total = fvSlideCount;
+    const isLast = index === total - 1;
+
+    if (sp.factImages > 0) {
+      fvSlideArea.innerHTML = `
+        <div class="fv-species-overlay">${PANEL_NAMES[sp.id] || sp.name}</div>
+        <div class="fv-image-slide">
+          <img class="fv-img" src="asset/${sp.id}/fact${index + 1}.png"
+               alt="Fact ${index + 1} — ${PANEL_NAMES[sp.id] || sp.name}">
+        </div>`;
+    } else {
+      fvSlideArea.innerHTML = `
+        <div class="fv-text-slide">
+          <div class="fv-species-label">${PANEL_NAMES[sp.id] || sp.name}</div>
+          <div class="fv-did-you-know" style="color:${sp.accentColor}">Did you know?</div>
+          <div class="fv-fact-text">${sp.facts[index]}</div>
+        </div>`;
+    }
+
+    fvHint.textContent = isLast ? 'TAP TO CLOSE' : 'TAP TO CONTINUE';
+    fvCounter.textContent = `${index + 1} / ${total}`;
+
+    fvDots.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'fv-dot' + (i === index ? ' is-active' : '');
+      if (i === index) dot.style.background = sp.accentColor;
+      fvDots.appendChild(dot);
+    }
+  }
+
+  function openFactViewer(sp) {
+    fvSpecies    = sp;
+    fvSlideIndex = 0;
+    fvSlideCount = sp.factImages > 0 ? sp.factImages : sp.facts.length;
+    renderSlide(0);
+    factViewer.hidden = false;
+    document.body.style.overflow = 'hidden';
+    pauseLoop();
+    resetIdleTimer();
+  }
+
+  function closeFactViewer() {
+    clearTimeout(fvIdleTimer);
+    factViewer.hidden = true;
+    document.body.style.overflow = '';
+    resumeLoop();
+  }
+
+  function nextSlide() {
+    resetIdleTimer();
+    if (fvSlideIndex < fvSlideCount - 1) {
+      fvSlideIndex++;
+      renderSlide(fvSlideIndex);
+    } else {
+      closeFactViewer();
+    }
+  }
+
+  function resetIdleTimer() {
+    clearTimeout(fvIdleTimer);
+    fvIdleTimer = setTimeout(closeFactViewer, IDLE_TIMEOUT);
   }
 
   // ── Render Panels ────────────────────────
@@ -266,6 +349,20 @@
   }
 
   // ── Event Listeners ──────────────────────
+  fvSlideArea.addEventListener('click', nextSlide);
+
+  fvClose.addEventListener('click', () => {
+    resetIdleTimer();
+    closeFactViewer();
+  });
+
+  document.addEventListener('touchstart', () => {
+    if (!factViewer.hidden) resetIdleTimer();
+  }, { passive: true });
+
+  document.addEventListener('mousedown', () => {
+    if (!factViewer.hidden) resetIdleTimer();
+  });
 
   // ── Init ─────────────────────────────────
   renderGallery();
