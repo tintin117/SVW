@@ -362,7 +362,7 @@
 
   document.addEventListener('mousedown', () => {
     if (!factViewer.hidden) resetIdleTimer();
-  });
+  }, { passive: true });
 
   // ── Init ─────────────────────────────────
   renderGallery();
