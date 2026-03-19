@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0">
+    <title>Save Vietnam's Wildlife: The Sunda Pangolin</title>
+    <!-- Google Fonts for modern aesthetics -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container" id="app-container">
+        
+        <!-- Header Branding -->
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="logo-icon">🌿</span>
+                <div class="logo-text">Save Vietnam's Wildlife</div>
+            </div>
+            <div class="title-area">
+                THE SUNDA PANGOLIN EXHIBIT
+            </div>
+        </header>
+
+        <!-- Main Content Area (Glassmorphism Card) -->
+        <main class="hero-card">
+            
+            <div class="hero-content">
+                <div class="text-section">
+                    <h1 id="main-heading" class="hero-title fade-in-up">Loading...</h1>
+                    <p id="sub-heading" class="hero-subtitle fade-in-up delay-1">...</p>
+                    <p id="instruction-text" class="stepper-instruction fade-in-up delay-2">...</p>
+                </div>
+                
+                <div class="image-section">
+                    <div class="pangolin-image-container fade-in-up delay-2">
+                        <img src="pangolin.png" alt="Sunda Pangolin Artwork" class="pangolin-art">
+                        <div class="image-glow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stepper Timeline -->
+            <div class="stepper-section">
+                <div class="stepper-track">
+                    <div class="stepper-progress" id="stepper-progress"></div>
+                </div>
+                <div class="stepper-nodes" id="stepper-nodes">
+                    <!-- Nodes injected here -->
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Controls -->
+            <nav class="bottom-nav">
+                <ul class="nav-pills" id="nav-pills">
+                    <!-- Pills injected here -->
+                </ul>
+            </nav>
+        </main>
+
+    </div>
+
+    <!-- Scaler Script -->
+    <script>
+        function scaleLayout() {
+            const wrapper = document.getElementById('app-container');
+            const scaleX = window.innerWidth / 1920;
+            const scaleY = window.innerHeight / 1080;
+            const scale = Math.min(scaleX, scaleY);
+            
+            wrapper.style.transform = `scale(${scale})`;
+            
+            const leftOffset = (window.innerWidth - (1920 * scale)) / 2;
+            const topOffset = (window.innerHeight - (1080 * scale)) / 2;
+            wrapper.style.left = `${leftOffset}px`;
+            wrapper.style.top = `${topOffset}px`;
+        }
+
+        window.addEventListener('resize', scaleLayout);
+        window.addEventListener('load', scaleLayout);
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
