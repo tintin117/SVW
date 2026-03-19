@@ -15,30 +15,28 @@
   const factViewer  = document.getElementById('fact-viewer');
   const fvSlideArea = document.getElementById('fv-slide-area');
   const fvClose     = document.getElementById('fv-close');
-  const fvDots      = document.getElementById('fv-dots');
-  const fvHint      = document.getElementById('fv-hint');
-  const fvCounter   = document.getElementById('fv-counter');
+  const fvBar       = document.querySelector('.fv-bar');
 
   // ── Accordion state ─────────────────────
   let currentIndex = 0;
   let panelEls = [];
   let dotEls   = [];
-  let progressBar = null;   // active panel's progress bar element
-  let wasDragging = false;  // suppress click after a completed drag
+  let progressBar = null;
+  let wasDragging = false;
 
   // ── Fact Viewer state ───────────────
-  let fvSpecies    = null;
-  let fvSlideIndex = 0;
-  let fvSlideCount = 0;
-  let fvIdleTimer  = null;
+  let fvSpecies     = null;
+  let fvScreenIndex = 0;
+  let fvScreenCount = 0;
+  let fvIdleTimer   = null;
 
-  const IDLE_TIMEOUT = 60000; // ms — time before auto-closing viewer
+  const IDLE_TIMEOUT = 60000;
 
-  // Auto-loop interval (ms) — time each species is displayed
+  // Auto-loop interval (ms)
   const LOOP_INTERVAL = 5000;
   let loopTimer = null;
 
-  // Carousel panel backgrounds. Use species avatar if defined, else rotate placeholders.
+  // Carousel panel backgrounds
   const IMAGES = [
     'asset/pangolin/pangolin.png',
     'asset/tiger.png',
@@ -46,19 +44,17 @@
   ];
   const PLACEHOLDERS = SPECIES.map((sp, i) => sp.avatar || IMAGES[i % IMAGES.length]);
 
-  // Short display names for panel headings
   const PANEL_NAMES = {
-    turtle:       'Sea Turtle',
-    elephant:     'Elephant',
-    orangutan:    'Orangutan',
-    snow_leopard: 'Snow Leopard',
-    whale:        'Blue Whale',
-    pangolin:     'Sunda Pangolin',
-    rhino:        'Rhinoceros',
-    axolotl:      'Axolotl',
+    pangolin:      'Sunda Pangolin',
+    placeholder_1: 'Placeholder',
+    placeholder_2: 'Placeholder',
+    placeholder_3: 'Placeholder',
+    placeholder_4: 'Placeholder',
+    placeholder_5: 'Placeholder',
+    placeholder_6: 'Placeholder',
+    placeholder_7: 'Placeholder',
   };
 
-  // First sentence of threat text (used as short panel description)
   function shortDesc(sp) {
     const sentence = sp.threat.split(/\.\s/)[0];
     return sentence.endsWith('.') ? sentence : sentence + '.';
@@ -96,11 +92,8 @@
     loopTimer = setInterval(() => goTo(currentIndex + 1), LOOP_INTERVAL);
   }
 
-  function resetLoop() {
-    startLoop();
-  }
+  function resetLoop() { startLoop(); }
 
-  // Animate the progress bar on the active panel
   function startProgressBar() {
     const activePanel = panelEls[currentIndex];
     if (!activePanel) return;
@@ -128,45 +121,88 @@
     startProgressBar();
   }
 
-  // ── Fact Viewer ──────────────────────
-  function renderSlide(index) {
-    const sp    = fvSpecies;
-    const total = fvSlideCount;
-    const isLast = index === total - 1;
+  // ── Infographic ───────────────────────
+  function renderInfographicScreen(sp, index) {
+    fvScreenIndex = index;
+    const screen = sp.screens[index];
+    const total  = fvScreenCount;
+    const progressPct = total > 1 ? (index / (total - 1)) * 100 : 100;
 
-    if (sp.factImages > 0) {
-      fvSlideArea.innerHTML = `
-        <div class="fv-species-overlay">${PANEL_NAMES[sp.id] || sp.name}</div>
-        <div class="fv-image-slide">
-          <img class="fv-img" src="asset/${sp.id}/fact${index + 1}.png"
-               alt="Fact ${index + 1} — ${PANEL_NAMES[sp.id] || sp.name}">
-        </div>`;
-    } else {
-      fvSlideArea.innerHTML = `
-        <div class="fv-text-slide">
-          <div class="fv-species-label">${PANEL_NAMES[sp.id] || sp.name}</div>
-          <div class="fv-did-you-know" style="color:${sp.accentColor}">Did you know?</div>
-          <div class="fv-fact-text">${sp.facts[index]}</div>
-        </div>`;
-    }
-
-    fvHint.textContent = isLast ? 'TAP TO CLOSE' : 'TAP TO CONTINUE';
-    fvCounter.textContent = `${index + 1} / ${total}`;
-
-    fvDots.innerHTML = '';
+    let nodesHtml = '';
     for (let i = 0; i < total; i++) {
-      const dot = document.createElement('div');
-      dot.className = 'fv-dot' + (i === index ? ' is-active' : '');
-      if (i === index) dot.style.background = sp.accentColor;
-      fvDots.appendChild(dot);
+      let cls = 'infographic-step-node';
+      if (i < index)      cls += ' is-completed';
+      else if (i === index) cls += ' is-active';
+      const glow = i === index
+        ? `style="box-shadow:0 0 14px ${sp.accentColor};border-color:${sp.accentColor}"`
+        : '';
+      nodesHtml += `<div class="${cls}" ${glow}></div>`;
     }
+
+    let pillsHtml = '';
+    for (let i = 0; i < total; i++) {
+      const active = i === index;
+      const style = active
+        ? `style="background:${sp.accentColor};border-color:${sp.accentColor};color:#000"`
+        : '';
+      pillsHtml += `<button class="infographic-nav-pill${active ? ' is-active' : ''}" data-idx="${i}" ${style}>${sp.screens[i].label}</button>`;
+    }
+
+    fvSlideArea.innerHTML = `
+      <div class="infographic">
+        <div class="infographic-hero">
+          <div class="infographic-text">
+            <div class="infographic-label">${sp.name}</div>
+            <h2 class="infographic-title">${screen.heading}</h2>
+            <p class="infographic-subtitle">${screen.subheading}</p>
+            <p class="infographic-instruction" style="color:${sp.accentColor}">${screen.instruction}</p>
+          </div>
+          <div class="infographic-image-wrap">
+            <img class="infographic-img" src="${sp.avatar}" alt="${sp.name}">
+            <div class="infographic-glow" style="background:radial-gradient(circle,${sp.accentColor}66 0%,transparent 70%)"></div>
+          </div>
+        </div>
+        <div class="infographic-stepper">
+          <div class="infographic-stepper-track">
+            <div class="infographic-stepper-progress" style="width:${progressPct}%;background:${sp.accentColor}"></div>
+          </div>
+          <div class="infographic-stepper-nodes">${nodesHtml}</div>
+        </div>
+        <nav class="infographic-nav">
+          <ul class="infographic-nav-pills">${pillsHtml}</ul>
+        </nav>
+      </div>`;
+
+    // Per-step image micro-animation (from /asset/app/app.js updateStepperAndNav)
+    const img = fvSlideArea.querySelector('.infographic-img');
+    if (img) {
+      img.style.transform = `scale(${1 + index * 0.02}) rotate(${index * 1.5}deg)`;
+      img.style.transition = 'transform 1s cubic-bezier(0.16, 1, 0.3, 1)';
+    }
+
+    // Nav pill click handlers — stopPropagation prevents triggering the advance listener
+    fvSlideArea.querySelectorAll('.infographic-nav-pill').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        renderInfographicScreen(sp, parseInt(btn.dataset.idx, 10));
+        resetIdleTimer();
+      });
+    });
   }
 
   function openFactViewer(sp) {
-    fvSpecies    = sp;
-    fvSlideIndex = 0;
-    fvSlideCount = sp.factImages > 0 ? sp.factImages : sp.facts.length;
-    renderSlide(0);
+    fvSpecies     = sp;
+    fvScreenIndex = 0;
+    fvBar.hidden  = true;
+
+    if (sp.isPlaceholder) {
+      fvScreenCount = 1;
+      fvSlideArea.innerHTML = `<div class="infographic-placeholder"><p>Coming Soon</p></div>`;
+    } else {
+      fvScreenCount = sp.screens.length;
+      renderInfographicScreen(sp, 0);
+    }
+
     factViewer.hidden = false;
     document.body.style.overflow = 'hidden';
     pauseLoop();
@@ -182,9 +218,13 @@
 
   function nextSlide() {
     resetIdleTimer();
-    if (fvSlideIndex < fvSlideCount - 1) {
-      fvSlideIndex++;
-      renderSlide(fvSlideIndex);
+    if (fvScreenIndex < fvScreenCount - 1) {
+      fvScreenIndex++;
+      if (fvSpecies && fvSpecies.screens) {
+        renderInfographicScreen(fvSpecies, fvScreenIndex);
+      } else {
+        closeFactViewer();
+      }
     } else {
       closeFactViewer();
     }
@@ -263,14 +303,14 @@
 
   // ── Drag / Swipe (vertical) ──────────────
   function initDrag() {
-    const THRESHOLD     = 100;  // px — mid-drag commit distance
-    const VEL_THRESHOLD = 0.3;  // px/ms — release-velocity fallback
+    const THRESHOLD     = 100;
+    const VEL_THRESHOLD = 0.3;
     let startY   = 0;
     let dragY    = 0;
     let dragging = false;
     let lastY    = 0;
     let lastTime = 0;
-    let velocity = 0;  // px/ms, positive = downward
+    let velocity = 0;
 
     function visiblePanels() {
       return panelEls.filter(p =>
