@@ -122,85 +122,28 @@
   }
 
   // ── Infographic ───────────────────────
-  function renderInfographicScreen(sp, index) {
-    fvScreenIndex = index;
-    const screen = sp.screens[index];
-    const total  = fvScreenCount;
-    const progressPct = total > 1 ? (index / (total - 1)) * 100 : 100;
-
-    let nodesHtml = '';
-    for (let i = 0; i < total; i++) {
-      let cls = 'infographic-step-node';
-      if (i < index)      cls += ' is-completed';
-      else if (i === index) cls += ' is-active';
-      const glow = i === index
-        ? `style="box-shadow:0 0 14px ${sp.accentColor};border-color:${sp.accentColor}"`
-        : '';
-      nodesHtml += `<div class="${cls}" ${glow}></div>`;
-    }
-
-    let pillsHtml = '';
-    for (let i = 0; i < total; i++) {
-      const active = i === index;
-      const style = active
-        ? `style="background:${sp.accentColor};border-color:${sp.accentColor};color:#000"`
-        : '';
-      pillsHtml += `<button class="infographic-nav-pill${active ? ' is-active' : ''}" data-idx="${i}" ${style}>${sp.screens[i].label}</button>`;
-    }
-
-    fvSlideArea.innerHTML = `
-      <div class="infographic">
-        <div class="infographic-hero">
-          <div class="infographic-text">
-            <div class="infographic-label">${sp.name}</div>
-            <h2 class="infographic-title">${screen.heading}</h2>
-            <p class="infographic-subtitle">${screen.subheading}</p>
-            <p class="infographic-instruction" style="color:${sp.accentColor}">${screen.instruction}</p>
-          </div>
-          <div class="infographic-image-wrap">
-            <img class="infographic-img" src="${sp.avatar}" alt="${sp.name}">
-            <div class="infographic-glow" style="background:radial-gradient(circle,${sp.accentColor}66 0%,transparent 70%)"></div>
-          </div>
-        </div>
-        <div class="infographic-stepper">
-          <div class="infographic-stepper-track">
-            <div class="infographic-stepper-progress" style="width:${progressPct}%;background:${sp.accentColor}"></div>
-          </div>
-          <div class="infographic-stepper-nodes">${nodesHtml}</div>
-        </div>
-        <nav class="infographic-nav">
-          <ul class="infographic-nav-pills">${pillsHtml}</ul>
-        </nav>
-      </div>`;
-
-    // Per-step image micro-animation (from /asset/app/app.js updateStepperAndNav)
-    const img = fvSlideArea.querySelector('.infographic-img');
-    if (img) {
-      img.style.transform = `scale(${1 + index * 0.02}) rotate(${index * 1.5}deg)`;
-      img.style.transition = 'transform 1s cubic-bezier(0.16, 1, 0.3, 1)';
-    }
-
-    // Nav pill click handlers — stopPropagation prevents triggering the advance listener
-    fvSlideArea.querySelectorAll('.infographic-nav-pill').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        renderInfographicScreen(sp, parseInt(btn.dataset.idx, 10));
-        resetIdleTimer();
-      });
-    });
-  }
-
   function openFactViewer(sp) {
     fvSpecies     = sp;
     fvScreenIndex = 0;
     fvBar.hidden  = true;
 
+    fvSlideArea.innerHTML = '';
+
     if (sp.isPlaceholder) {
       fvScreenCount = 1;
       fvSlideArea.innerHTML = `<div class="infographic-placeholder"><p>Coming Soon</p></div>`;
     } else {
-      fvScreenCount = sp.screens.length;
-      renderInfographicScreen(sp, 0);
+      fvScreenCount = 0;
+      const iframe = document.createElement('iframe');
+      iframe.className = 'infographic-iframe';
+      iframe.src = 'asset/app/index.html';
+      iframe.addEventListener('load', () => {
+        try {
+          iframe.contentDocument.addEventListener('touchstart', resetIdleTimer, { passive: true });
+          iframe.contentDocument.addEventListener('mousedown', resetIdleTimer);
+        } catch (e) { /* cross-origin guard */ }
+      });
+      fvSlideArea.appendChild(iframe);
     }
 
     factViewer.hidden = false;
